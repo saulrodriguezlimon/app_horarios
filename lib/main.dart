@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../screens/home_screen.dart';
+
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,14 +11,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
+
       title: 'App Horarios',
+
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: const Color(0xFFF5F5F5),
       ),
-      home: const HomeScreen(),
+
+      home: const LoginScreen(),
     );
   }
 }

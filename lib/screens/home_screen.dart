@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../data/buildings_data.dart';
@@ -5,30 +7,63 @@ import '../models/building_model.dart';
 import 'building_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+
+  final String username;
+
+  const HomeScreen({
+    super.key,
+    required this.username,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   String orderType = 'Alfabeto';
+
+  DateTime currentTime = DateTime.now();
+
+  late Timer timer;
 
   @override
   void initState() {
     super.initState();
+
     sortBuildings();
+
+    timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) {
+        setState(() {
+          currentTime = DateTime.now();
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   void sortBuildings() {
+
     setState(() {
+
       if (orderType == 'Alfabeto') {
+
         buildings.sort(
           (a, b) => a.name.compareTo(b.name),
         );
+
       } else {
+
         buildings.sort(
-          (a, b) => b.occupiedRooms.compareTo(a.occupiedRooms),
+          (a, b) =>
+              b.occupiedRooms.compareTo(a.occupiedRooms),
         );
       }
     });
@@ -36,7 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       backgroundColor: const Color(0xFFF2F2F2),
 
       appBar: AppBar(
@@ -60,10 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            /// SALUDO
-            const Text(
-              'Bienvenido {user}!',
-              style: TextStyle(
+            Text(
+              'Bienvenido ${widget.username}!',
+
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
@@ -71,17 +108,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 10),
 
-            const Text(
-              'Selecciona un edificio de interes :)',
-              style: TextStyle(
-                fontSize: 18,
+            Text(
+              '${currentTime.hour.toString().padLeft(2, '0')}:'
+              '${currentTime.minute.toString().padLeft(2, '0')}:'
+              '${currentTime.second.toString().padLeft(2, '0')}',
+
+              style: const TextStyle(
+                fontSize: 24,
                 color: Colors.black54,
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 30),
 
-            /// DROPDOWN
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -96,25 +135,34 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               child: DropdownButtonHideUnderline(
+
                 child: DropdownButton<String>(
                   value: orderType,
-
                   isExpanded: true,
 
                   items: const [
+
                     DropdownMenuItem(
                       value: 'Alfabeto',
-                      child: Text('Ordenar por alfabeto'),
+                      child: Text(
+                        'Ordenar por alfabeto',
+                      ),
                     ),
 
                     DropdownMenuItem(
                       value: 'Concurrencia',
-                      child: Text('Ordenar por concurrencia'),
+                      child: Text(
+                        'Ordenar por concurrencia',
+                      ),
                     ),
                   ],
 
                   onChanged: (value) {
-                    orderType = value!;
+
+                    setState(() {
+                      orderType = value!;
+                    });
+
                     sortBuildings();
                   },
                 ),
@@ -123,13 +171,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 30),
 
-            /// GRID DE EDIFICIOS
             Expanded(
               child: GridView.builder(
+
                 itemCount: buildings.length,
 
                 gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
+
                   crossAxisCount: 2,
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20,
@@ -137,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 itemBuilder: (context, index) {
+
                   final building = buildings[index];
 
                   return buildingCard(
@@ -156,7 +206,9 @@ class _HomeScreenState extends State<HomeScreen> {
     BuildContext context,
     BuildingModel building,
   ) {
+
     return InkWell(
+
       borderRadius: BorderRadius.circular(20),
 
       onTap: () {
@@ -173,11 +225,13 @@ class _HomeScreenState extends State<HomeScreen> {
       },
 
       child: Container(
+
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
 
           boxShadow: [
+
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
@@ -190,10 +244,11 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(16),
 
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
+
             children: [
 
-              /// NOMBRE
               Text(
                 building.name,
 
@@ -205,16 +260,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const Spacer(),
 
-              /// TOTAL
               Container(
                 width: double.infinity,
+
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
                 ),
 
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius:
+                      BorderRadius.circular(12),
                 ),
 
                 child: Text(
@@ -231,19 +287,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 14),
 
-              /// OCUPADOS Y LIBRES
               Row(
                 children: [
 
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
+
+                      padding:
+                          const EdgeInsets.symmetric(
                         vertical: 12,
                       ),
 
                       decoration: BoxDecoration(
                         color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(12),
                       ),
 
                       child: Column(
@@ -251,9 +309,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const Text(
                             'Ocupados',
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
+                            style:
+                                TextStyle(fontSize: 14),
                           ),
 
                           const SizedBox(height: 6),
@@ -263,7 +320,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             style: const TextStyle(
                               fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                              fontWeight:
+                                  FontWeight.bold,
                             ),
                           ),
                         ],
@@ -275,13 +333,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
+
+                      padding:
+                          const EdgeInsets.symmetric(
                         vertical: 12,
                       ),
 
                       decoration: BoxDecoration(
                         color: Colors.green.shade50,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(12),
                       ),
 
                       child: Column(
@@ -289,9 +350,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const Text(
                             'Libres',
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
+                            style:
+                                TextStyle(fontSize: 14),
                           ),
 
                           const SizedBox(height: 6),
@@ -301,7 +361,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             style: const TextStyle(
                               fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                              fontWeight:
+                                  FontWeight.bold,
                             ),
                           ),
                         ],
