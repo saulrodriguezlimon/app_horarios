@@ -7,7 +7,6 @@ import '../models/building_model.dart';
 import 'building_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
   final String username;
 
   const HomeScreen({
@@ -20,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String orderType = 'Alfabeto';
 
   DateTime currentTime = DateTime.now();
@@ -50,17 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void sortBuildings() {
-
     setState(() {
-
       if (orderType == 'Alfabeto') {
-
         buildings.sort(
           (a, b) => a.name.compareTo(b.name),
         );
-
       } else {
-
         buildings.sort(
           (a, b) =>
               b.occupiedRooms.compareTo(a.occupiedRooms),
@@ -71,133 +64,170 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-      backgroundColor: const Color(0xFFF2F2F2),
+      extendBodyBehindAppBar: true,
 
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         centerTitle: true,
 
         title: const Text(
           'Horarios',
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: Stack(
+        children: [
 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            Text(
-              'Bienvenido ${widget.username}!',
-
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+          /// IMAGEN DE FONDO
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/backgroundittla.jpg',
+              fit: BoxFit.cover,
             ),
+          ),
 
-            const SizedBox(height: 10),
-
-            Text(
-              '${currentTime.hour.toString().padLeft(2, '0')}:'
-              '${currentTime.minute.toString().padLeft(2, '0')}:'
-              '${currentTime.second.toString().padLeft(2, '0')}',
-
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.black54,
-              ),
+          /// CAPA OSCURA
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.45),
             ),
+          ),
 
-            const SizedBox(height: 30),
+          /// CONTENIDO
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
 
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
 
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: Colors.black12,
-                ),
-              ),
+                children: [
 
-              child: DropdownButtonHideUnderline(
+                  Text(
+                    'Bienvenido ${widget.username}!',
 
-                child: DropdownButton<String>(
-                  value: orderType,
-                  isExpanded: true,
+                    style: const TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
 
-                  items: const [
+                  const SizedBox(height: 14),
 
-                    DropdownMenuItem(
-                      value: 'Alfabeto',
-                      child: Text(
-                        'Ordenar por alfabeto',
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 22,
+                      vertical: 12,
+                    ),
+
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius:
+                          BorderRadius.circular(18),
+                      border: Border.all(
+                        color: Colors.white24,
                       ),
                     ),
 
-                    DropdownMenuItem(
-                      value: 'Concurrencia',
-                      child: Text(
-                        'Ordenar por concurrencia',
+                    child: Text(
+                      '${currentTime.hour.toString().padLeft(2, '0')}:'
+                      '${currentTime.minute.toString().padLeft(2, '0')}:'
+                      '${currentTime.second.toString().padLeft(2, '0')}',
+
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ],
+                  ),
 
-                  onChanged: (value) {
+                  const SizedBox(height: 30),
 
-                    setState(() {
-                      orderType = value!;
-                    });
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
 
-                    sortBuildings();
-                  },
-                ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(16),
+                    ),
+
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: orderType,
+                        isExpanded: true,
+
+                        items: const [
+
+                          DropdownMenuItem(
+                            value: 'Alfabeto',
+                            child: Text(
+                              'Ordenar por alfabeto',
+                            ),
+                          ),
+
+                          DropdownMenuItem(
+                            value: 'Concurrencia',
+                            child: Text(
+                              'Ordenar por concurrencia',
+                            ),
+                          ),
+                        ],
+
+                        onChanged: (value) {
+                          setState(() {
+                            orderType = value!;
+                          });
+
+                          sortBuildings();
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  Expanded(
+                    child: GridView.builder(
+                      itemCount: buildings.length,
+
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: 0.95,
+                      ),
+
+                      itemBuilder: (context, index) {
+
+                        final building =
+                            buildings[index];
+
+                        return buildingCard(
+                          context,
+                          building,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            const SizedBox(height: 30),
-
-            Expanded(
-              child: GridView.builder(
-
-                itemCount: buildings.length,
-
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 0.95,
-                ),
-
-                itemBuilder: (context, index) {
-
-                  final building = buildings[index];
-
-                  return buildingCard(
-                    context,
-                    building,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -206,13 +236,10 @@ class _HomeScreenState extends State<HomeScreen> {
     BuildContext context,
     BuildingModel building,
   ) {
-
     return InkWell(
-
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(24),
 
       onTap: () {
-
         Navigator.push(
           context,
 
@@ -225,23 +252,23 @@ class _HomeScreenState extends State<HomeScreen> {
       },
 
       child: Container(
-
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.white.withOpacity(0.92),
+
+          borderRadius:
+              BorderRadius.circular(24),
 
           boxShadow: [
-
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
 
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
 
           child: Column(
             crossAxisAlignment:
@@ -253,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 building.name,
 
                 style: const TextStyle(
-                  fontSize: 26,
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -263,14 +290,15 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 width: double.infinity,
 
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
+                padding:
+                    const EdgeInsets.symmetric(
+                  vertical: 12,
                 ),
 
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: Colors.grey.shade200,
                   borderRadius:
-                      BorderRadius.circular(12),
+                      BorderRadius.circular(14),
                 ),
 
                 child: Text(
@@ -280,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -292,16 +320,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Expanded(
                     child: Container(
-
                       padding:
                           const EdgeInsets.symmetric(
-                        vertical: 12,
+                        vertical: 14,
                       ),
 
                       decoration: BoxDecoration(
-                        color: Colors.red.shade50,
+                        color: Colors.red.shade100,
                         borderRadius:
-                            BorderRadius.circular(12),
+                            BorderRadius.circular(14),
                       ),
 
                       child: Column(
@@ -309,8 +336,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const Text(
                             'Ocupados',
-                            style:
-                                TextStyle(fontSize: 14),
                           ),
 
                           const SizedBox(height: 6),
@@ -319,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             '${building.occupiedRooms}',
 
                             style: const TextStyle(
-                              fontSize: 22,
+                              fontSize: 24,
                               fontWeight:
                                   FontWeight.bold,
                             ),
@@ -333,16 +358,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Expanded(
                     child: Container(
-
                       padding:
                           const EdgeInsets.symmetric(
-                        vertical: 12,
+                        vertical: 14,
                       ),
 
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color:
+                            Colors.green.shade100,
                         borderRadius:
-                            BorderRadius.circular(12),
+                            BorderRadius.circular(14),
                       ),
 
                       child: Column(
@@ -350,8 +375,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           const Text(
                             'Libres',
-                            style:
-                                TextStyle(fontSize: 14),
                           ),
 
                           const SizedBox(height: 6),
@@ -360,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             '${building.freeRooms}',
 
                             style: const TextStyle(
-                              fontSize: 22,
+                              fontSize: 24,
                               fontWeight:
                                   FontWeight.bold,
                             ),

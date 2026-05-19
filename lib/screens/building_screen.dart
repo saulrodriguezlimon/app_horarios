@@ -5,6 +5,7 @@ import '../models/room_model.dart';
 import '../models/class_schedule_model.dart';
 
 class BuildingScreen extends StatefulWidget {
+
   final BuildingModel building;
 
   const BuildingScreen({
@@ -13,10 +14,12 @@ class BuildingScreen extends StatefulWidget {
   });
 
   @override
-  State<BuildingScreen> createState() => _BuildingScreenState();
+  State<BuildingScreen> createState() =>
+      _BuildingScreenState();
 }
 
-class _BuildingScreenState extends State<BuildingScreen> {
+class _BuildingScreenState
+    extends State<BuildingScreen> {
 
   final List<String> days = [
     'Lunes',
@@ -29,21 +32,29 @@ class _BuildingScreenState extends State<BuildingScreen> {
   ];
 
   String getCurrentDay() {
+
     final now = DateTime.now();
 
     switch (now.weekday) {
+
       case 1:
         return 'Lunes';
+
       case 2:
         return 'Martes';
+
       case 3:
         return 'Miercoles';
+
       case 4:
         return 'Jueves';
+
       case 5:
         return 'Viernes';
+
       case 6:
         return 'Sabado';
+
       default:
         return 'Domingo';
     }
@@ -54,7 +65,9 @@ class _BuildingScreenState extends State<BuildingScreen> {
   }
 
   bool isClassActive(ClassSchedule schedule) {
+
     final currentDay = getCurrentDay();
+
     final currentHour = getCurrentHour();
 
     return schedule.day == currentDay &&
@@ -65,6 +78,7 @@ class _BuildingScreenState extends State<BuildingScreen> {
   bool isRoomOccupied(RoomModel room) {
 
     for (var schedule in room.schedules) {
+
       if (isClassActive(schedule)) {
         return true;
       }
@@ -76,144 +90,237 @@ class _BuildingScreenState extends State<BuildingScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.building.name),
+    return Container(
+
+      decoration: const BoxDecoration(
+
+        image: DecorationImage(
+          image: AssetImage(
+            'assets/images/backgroundittla.jpg',
+          ),
+          fit: BoxFit.cover,
+        ),
       ),
 
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: widget.building.rooms.length,
+      child: Scaffold(
 
-        itemBuilder: (context, index) {
+        backgroundColor:
+            Colors.black.withOpacity(0.35),
 
-          final room = widget.building.rooms[index];
+        appBar: AppBar(
+          title: Text(widget.building.name),
+          backgroundColor: Colors.white,
+        ),
 
-          final occupied = isRoomOccupied(room);
+        body: ListView.builder(
 
-          return Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
 
-            decoration: BoxDecoration(
-              color: occupied
-                  ? Colors.red.shade100
-                  : Colors.green.shade100,
+          itemCount:
+              widget.building.rooms.length,
 
-              borderRadius: BorderRadius.circular(16),
-            ),
+          itemBuilder: (context, index) {
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            final room =
+                widget.building.rooms[index];
 
-                Text(
-                  room.roomName,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+            final occupied =
+                isRoomOccupied(room);
+
+            return Container(
+
+              margin:
+                  const EdgeInsets.only(
+                bottom: 16,
+              ),
+
+              padding: const EdgeInsets.all(16),
+
+              decoration: BoxDecoration(
+
+                color: occupied
+                    ? Colors.red
+                        .shade100
+                        .withOpacity(0.92)
+                    : Colors.green
+                        .shade100
+                        .withOpacity(0.92),
+
+                borderRadius:
+                    BorderRadius.circular(16),
+              ),
+
+              child: Column(
+
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+
+                children: [
+
+                  Text(
+                    room.roomName,
+
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                Text(
-                  occupied
-                      ? 'Estado: Ocupado'
-                      : 'Estado: Libre',
+                  Text(
 
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: occupied
-                        ? Colors.red
-                        : Colors.green,
-                  ),
-                ),
+                    occupied
+                        ? 'Estado: Ocupado'
+                        : 'Estado: Libre',
 
-                const SizedBox(height: 14),
-
-                if (room.schedules.isNotEmpty)
-                  const Text(
-                    'Horarios:',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      fontWeight:
+                          FontWeight.bold,
+
+                      color: occupied
+                          ? Colors.red
+                          : Colors.green,
                     ),
                   ),
 
-                const SizedBox(height: 8),
+                  const SizedBox(height: 14),
 
-                ...room.schedules.map((schedule) {
+                  if (room.schedules.isNotEmpty)
 
-                  final active = isClassActive(schedule);
+                    const Text(
+                      'Horarios:',
 
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(10),
-
-                    decoration: BoxDecoration(
-                      color: active
-                          ? Colors.orange.shade200
-                          : Colors.white,
-
-                      borderRadius: BorderRadius.circular(12),
+                      style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
                     ),
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  const SizedBox(height: 8),
 
-                        Text(
-                          schedule.subject,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                  ...room.schedules.map(
+                    (schedule) {
+
+                      final active =
+                          isClassActive(schedule);
+
+                      return Container(
+
+                        margin:
+                            const EdgeInsets.only(
+                          bottom: 10,
+                        ),
+
+                        padding:
+                            const EdgeInsets.all(10),
+
+                        decoration: BoxDecoration(
+
+                          color: active
+                              ? Colors.orange
+                                  .shade200
+                              : Colors.white
+                                  .withOpacity(0.95),
+
+                          borderRadius:
+                              BorderRadius.circular(
+                            12,
                           ),
                         ),
 
-                        Text(schedule.day),
+                        child: Column(
 
-                        Text(
-                          '${schedule.startHour}:00 - ${schedule.endHour}:00',
-                        ),
+                          crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .start,
 
-                        if (active)
-                          const Padding(
-                            padding: EdgeInsets.only(top: 6),
-                            child: Text(
-                              'CLASE ACTIVA',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
+                          children: [
+
+                            Text(
+                              schedule.subject,
+
+                              style:
+                                  const TextStyle(
+                                fontWeight:
+                                    FontWeight
+                                        .bold,
                               ),
                             ),
-                          ),
-                      ],
-                    ),
-                  );
-                }),
 
-                const SizedBox(height: 12),
+                            Text(schedule.day),
 
-                ElevatedButton(
-                  onPressed: () {
+                            Text(
+                              '${schedule.startHour}:00 - ${schedule.endHour}:00',
+                            ),
 
-                    setState(() {
+                            if (active)
 
-                      room.manuallyOccupied =
-                          !room.manuallyOccupied;
-                    });
-                  },
+                              const Padding(
+                                padding:
+                                    EdgeInsets.only(
+                                  top: 6,
+                                ),
 
-                  child: Text(
-                    room.manuallyOccupied
-                        ? 'Liberar salón'
-                        : 'Marcar ocupado',
+                                child: Text(
+                                  'CLASE ACTIVA',
+
+                                  style:
+                                      TextStyle(
+                                    color:
+                                        Colors.red,
+                                    fontWeight:
+                                        FontWeight
+                                            .bold,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+
+                  const SizedBox(height: 12),
+
+                  ElevatedButton(
+
+                    style:
+                        ElevatedButton.styleFrom(
+                      backgroundColor:
+                          occupied
+                              ? Colors.red
+                              : Colors.green,
+                    ),
+
+                    onPressed: () {
+
+                      setState(() {
+
+                        room.manuallyOccupied =
+                            !room
+                                .manuallyOccupied;
+                      });
+                    },
+
+                    child: Text(
+
+                      room.manuallyOccupied
+                          ? 'Liberar salón'
+                          : 'Marcar ocupado',
+
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

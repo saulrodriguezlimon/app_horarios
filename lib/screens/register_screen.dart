@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'login_screen.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -11,76 +13,154 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState
     extends State<RegisterScreen> {
 
-  final TextEditingController userController =
+  final TextEditingController usernameController =
       TextEditingController();
 
   final TextEditingController passwordController =
       TextEditingController();
 
-  void register() {
-
-    ScaffoldMessenger.of(context).showSnackBar(
-
-      const SnackBar(
-        content: Text(
-          'Usuario registrado',
-        ),
-      ),
-    );
-
-    Navigator.pop(context);
-  }
-
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return Container(
 
-      appBar: AppBar(
-        title: const Text('Registro'),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+            'assets/images/backgroundittla.jpg',
+          ),
+          fit: BoxFit.cover,
+        ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(25),
+      child: Scaffold(
 
-        child: Column(
-          children: [
+        backgroundColor: Colors.black.withOpacity(0.45),
 
-            TextField(
-              controller: userController,
+        body: Center(
 
-              decoration: const InputDecoration(
-                labelText: 'Usuario',
-                border: OutlineInputBorder(),
-              ),
-            ),
+          child: SingleChildScrollView(
 
-            const SizedBox(height: 20),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
 
-            TextField(
-              controller: passwordController,
-              obscureText: true,
+              child: Container(
 
-              decoration: const InputDecoration(
-                labelText: 'Contraseña',
-                border: OutlineInputBorder(),
-              ),
-            ),
+                width: 400,
 
-            const SizedBox(height: 30),
+                padding: const EdgeInsets.all(30),
 
-            SizedBox(
-              width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.92),
+                  borderRadius: BorderRadius.circular(25),
+                ),
 
-              child: ElevatedButton(
-                onPressed: register,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
 
-                child: const Text(
-                  'Registrarse',
+                  children: [
+
+                    const Icon(
+                      Icons.person_add,
+                      size: 90,
+                      color: Colors.green,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    const Text(
+                      'Crear Cuenta',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    TextField(
+                      controller: usernameController,
+
+                      decoration: InputDecoration(
+                        labelText: 'Usuario',
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(15),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+
+                      decoration: InputDecoration(
+                        labelText: 'Contraseña',
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(15),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 55,
+
+                      child: ElevatedButton(
+
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15),
+                          ),
+                        ),
+
+                        onPressed: () {
+
+                          Navigator.pushReplacement(
+                            context,
+
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const LoginScreen(),
+                            ),
+                          );
+                        },
+
+                        child: const Text(
+                          'Registrarse',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    TextButton(
+
+                      onPressed: () {
+
+                        Navigator.pop(context);
+                      },
+
+                      child: const Text(
+                        'Ya tengo cuenta',
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
